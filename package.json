@@ -3,7 +3,7 @@
   "version": "1.2.1",
   "main": "dist/index.js",
   "description": "This is a free OTP (One-Time Password) service built with Node.js, Express.js, Mongoose, and node-cron for handling OTP generation, verification, and automatic expiration.",
-  "author": "Saurav Hathi",
+  "author": "Team Secure Fin",
   "scripts": {
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
@@ -15,6 +15,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "mongodb": "^7.0.0",
     "mongoose": "^8.12.1",
     "nodemailer": "^6.10.0"
   },

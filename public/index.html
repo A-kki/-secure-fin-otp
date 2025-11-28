@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureFin - OTP Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.6s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            animation: slideIn 0.3s ease-out;
+            display: none;
+        }
+
+        .response.show {
+            display: block;
+        }
+
+        .response.success {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .response.error {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .response.info {
+            background: #d1ecf1;
+            border: 2px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.online {
+            background: #28a745;
+            box-shadow: 0 0 10px #28a745;
+        }
+
+        .status-indicator.offline {
+            background: #dc3545;
+            box-shadow: 0 0 10px #dc3545;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .info-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-card li {
+            padding: 10px 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card li::before {
+            content: '✓';
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .server-status {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 SecureFin</h1>
+            <p>Secure OTP Authentication System</p>
+        </div>
+
+        <div class="server-status" id="serverStatus">
+            <span class="status-indicator offline"></span>
+            Checking server status...
+        </div>
+
+        <div class="cards-container">
+            <!-- Generate OTP Card -->
+            <div class="card">
+                <h2>📧 Generate OTP</h2>
+                <form id="generateForm">
+                    <div class="form-group">
+                        <label for="generateEmail">Email Address</label>
+                        <input type="email" id="generateEmail" placeholder="user@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="otpType">OTP Type</label>
+                        <select id="otpType">
+                            <option value="numeric">Numeric (123456)</option>
+                            <option value="alphanumeric">Alphanumeric (A1B2C3)</option>
+                            <option value="alphabet">Alphabet (ABCDEF)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="organization">Organization Name</label>
+                        <input type="text" id="organization" placeholder="SecureFin" value="SecureFin">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Email Subject</label>
+                        <input type="text" id="subject" placeholder="Your OTP Code" value="Your OTP Code">
+                    </div>
+                    <button type="submit" id="generateBtn">Send OTP</button>
+                </form>
+                <div class="response" id="generateResponse"></div>
+            </div>
+
+            <!-- Verify OTP Card -->
+            <div class="card">
+                <h2>✅ Verify OTP</h2>
+                <form id="verifyForm">
+                    <div class="form-group">
+                        <label for="verifyEmail">Email Address</label>
+                        <input type="email" id="verifyEmail" placeholder="user@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="otpCode">OTP Code</label>
+                        <input type="text" id="otpCode" placeholder="123456" required maxlength="6">
+                    </div>
+                    <button type="submit" id="verifyBtn">Verify OTP</button>
+                </form>
+                <div class="response" id="verifyResponse"></div>
+            </div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="info-card">
+            <h3>📋 How to Use</h3>
+            <ul>
+                <li>Enter your email address in the "Generate OTP" section</li>
+                <li>Click "Send OTP" to receive an OTP code via email</li>
+                <li>Check your email inbox (and spam folder)</li>
+                <li>Enter the OTP code in the "Verify OTP" section</li>
+                <li>Click "Verify OTP" to validate the code</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+
+        // Check server status
+        async function checkServerStatus() {
+            try {
+                const response = await fetch(API_BASE);
+                const text = await response.text();
+                if (text.includes('Welcome to OTP service')) {
+                    document.getElementById('serverStatus').innerHTML =
+                        '<span class="status-indicator online"></span>Server is online and ready!';
+                    return true;
+                }
+            } catch (error) {
+                document.getElementById('serverStatus').innerHTML =
+                    '<span class="status-indicator offline"></span>Server is offline - Please start the server';
+                return false;
+            }
+        }
+
+        // Generate OTP
+        document.getElementById('generateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('generateBtn');
+            const responseDiv = document.getElementById('generateResponse');
+
+            btn.disabled = true;
+            btn.innerHTML = 'Sending OTP<span class="spinner"></span>';
+            responseDiv.classList.remove('show', 'success', 'error', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/otp/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: document.getElementById('generateEmail').value,
+                        type: document.getElementById('otpType').value,
+                        organization: document.getElementById('organization').value,
+                        subject: document.getElementById('subject').value,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.className = 'response success show';
+                    responseDiv.innerHTML = `
+                        <strong>✅ Success!</strong><br>
+                        ${data.message || 'OTP sent successfully! Check your email.'}
+                    `;
+                    // Auto-fill email in verify form
+                    document.getElementById('verifyEmail').value = document.getElementById('generateEmail').value;
+                } else {
+                    responseDiv.className = 'response error show';
+                    responseDiv.innerHTML = `
+                        <strong>❌ Error!</strong><br>
+                        ${data.message || data.error || 'Failed to send OTP. Please check your Gmail configuration.'}
+                    `;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error show';
+                responseDiv.innerHTML = `
+                    <strong>❌ Connection Error!</strong><br>
+                    ${error.message}<br>
+                    Make sure the server is running and Gmail is configured.
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Send OTP';
+            }
+        });
+
+        // Verify OTP
+        document.getElementById('verifyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('verifyBtn');
+            const responseDiv = document.getElementById('verifyResponse');
+
+            btn.disabled = true;
+            btn.innerHTML = 'Verifying<span class="spinner"></span>';
+            responseDiv.classList.remove('show', 'success', 'error', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/otp/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: document.getElementById('verifyEmail').value,
+                        otp: document.getElementById('otpCode').value,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.className = 'response success show';
+                    responseDiv.innerHTML = `
+                        <strong>✅ Verified!</strong><br>
+                        ${data.message || 'OTP is valid and verified successfully!'}
+                    `;
+                    document.getElementById('otpCode').value = '';
+                } else {
+                    responseDiv.className = 'response error show';
+                    responseDiv.innerHTML = `
+                        <strong>❌ Verification Failed!</strong><br>
+                        ${data.message || data.error || 'Invalid or expired OTP.'}
+                    `;
+                }
+            } catch (error) {
+                responseDiv.className = 'response error show';
+                responseDiv.innerHTML = `
+                    <strong>❌ Connection Error!</strong><br>
+                    ${error.message}
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Verify OTP';
+            }
+        });
+
+        // Check server status on load
+        checkServerStatus();
+
+        // Recheck every 10 seconds
+        setInterval(checkServerStatus, 10000);
+    </script>
+</body>
+
+</html>

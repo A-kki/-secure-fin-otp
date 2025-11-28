@@ -101,7 +101,7 @@ class SendMailController {
                   </div>
                   <div class="footer">
                       <p>For more information, visit our GitHub repository:</p>
-                      <p><a href="https://github.com/sauravhathi/otp-service" target="_blank">Saurav Hathi</a></p>
+                      <p><a href="https://github.com/sauravhathi/otp-service" target="_blank">Team Secure Fin</a></p>
                   </div>
               </div>
           </body>

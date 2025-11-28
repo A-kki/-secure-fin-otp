@@ -13,8 +13,8 @@ const connectDB = async () => {
         logger.info('🚀 Reusing existing MongoDB connection');
         return existingConnection;
     } catch (error: any) {
-        logger.error('Failed to connect to MongoDB', error.message);
-        process.exit(1);
+        logger.error('Failed to connect to MongoDB - Running in fallback mode', error.message);
+        return null;
     }
 };
 

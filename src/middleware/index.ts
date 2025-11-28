@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import mongoose from 'mongoose';
 import { isValidEmail } from '../utils/validator';
 import Blocklist from '../models/blockListModel';
 import logger from '../utils/logger';
@@ -29,12 +30,16 @@ export const validateSpamMiddleware = async (req: Request, res: Response, next: 
         }
 
 
-        const blocklist = await Blocklist.findOne({ $or: [{ email }, { ip }] }, { email: 1, ip: 1 }).lean();
-        if (blocklist) {
-            blockCache.set(cacheKey, now);
-            logger.error('Spam detected: Blocked IP or email');
-            res.status(400).json({ error: 'Spam detected' });
-            return;
+        if (mongoose.connection.readyState === 1) {
+            const blocklist = await Blocklist.findOne({ $or: [{ email }, { ip }] }, { email: 1, ip: 1 }).lean();
+            if (blocklist) {
+                blockCache.set(cacheKey, now);
+                logger.error('Spam detected: Blocked IP or email');
+                res.status(400).json({ error: 'Spam detected' });
+                return;
+            }
+        } else {
+            logger.warn('Skipping Blocklist check - DB not connected');
         }
 
         for (const word of spamWords) {

@@ -1,147 +1,84 @@
-# OTP Service
+# SecureFin OTP Service
 
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white) ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white) ![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white) ![MIT License](https://img.shields.io/badge/License-MIT-FF5722)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white) ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white) ![License](https://img.shields.io/badge/License-MIT-FF5722)
 
-The OTP (One-Time Password) Free Service is a Node.js-based service that allows you to generate and verify one-time passwords (OTP) via email. This service is useful for adding an extra layer of security to your applications by enabling two-factor authentication (2FA) or passwordless login.
+SecureFin is a robust Node.js service for generating and verifying One-Time Passwords (OTP) via email. It provides a secure layer for your applications, enabling 2FA or passwordless login with ease.
 
-## Demo
+## 🚀 Features
 
-- **API:** [otp-service-beta.vercel.app](https://otp-service-beta.vercel.app/)
-- **App:** [otp-service-app.vercel.app](https://otp-service-app.vercel.app/)
+- **Flexible OTPs**: Generate numeric, alphanumeric, or alphabet-based codes.
+- **Email Delivery**: Seamlessly send OTPs via email.
+- **Secure Verification**: Validate user OTPs instantly.
+- **Spam Protection**: Built-in spam detection and rate limiting.
+- **Customizable**: Configure OTP length, validity period, and more.
 
-## Table of Contents
-
-- [Features](#features)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-  - [Generating an OTP](#generating-an-otp)
-  - [Verifying an OTP](#verifying-an-otp)
-- [Configuration](#configuration)
-  - [Environment Variables](#environment-variables)
-- [Spam Detection](#spam-detection)
-- [Donation](#donation)
-- [License](#license)
-
-## Features
-
-| Feature                                      | Description                                                                                                                                                           |
-| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Generate numeric, alphanumeric, or alphabet based OTPs | Generate one-time passwords with various character types: numeric, alphanumeric, or alphabet based.  |
-| Send OTPs via email                          | Send OTPs to users via email for authentication or verification.                                                                                                      |
-| Verify OTPs for user authentication           | Verify OTPs provided by users for secure authentication.                                                          |
-| Spam detection                               | Detect spam requests and block them from being processed.
-| Customizable OTP validity period and size     | Adjust the validity period and size (length) of OTPs to match your security requirements.                                                                          |
-| Rate limiting for OTP generation              | Implement rate limiting to prevent abuse and ensure the service is used responsibly.                                                                              |
-| Multiple email service providers supported   | Choose from multiple email service providers (e.g., Gmail, Outlook) to send OTP emails.                                                                            |
-| Flexible configuration via environment variables | Customize the service's behavior by configuring environment variables.                                                                                                  |
-| Easy-to-use API with JSON input/output        | Interact with the service through a user-friendly JSON API for OTP generation and verification.                                                                  |
-
-## Getting Started
+## 🛠️ Quick Start
 
 ### Prerequisites
 
-Before you begin, ensure you have met the following requirements:
-
-| Prerequisite          | Description                                                      |
-| --------------------- | ---------------------------------------------------------------- |
-| Node.js and npm       | Install Node.js and npm on your development machine.            |
-| MongoDB database     | Set up a MongoDB database (local or cloud-hosted, e.g., MongoDB Atlas) for storing OTP data. |
+- Node.js & npm
+- MongoDB (Local or Atlas)
 
 ### Installation
 
-1. Clone the repository:
-
-   ```shell
-   git clone https://github.com/sauravhathi/otp-service.git
-   ```
-
-2. Navigate to the project directory:
-
-   ```shell
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/A-kki/-secure-fin-otp.git
    cd otp-service
    ```
 
-3. Install the dependencies:
-
-   ```shell
+2. **Install dependencies**
+   ```bash
    npm install
    ```
 
-4. Configure your environment variables by creating a `.env` file in the project root directory. You can use the provided `.env.example` as a template.
-
-5. Start the service:
-
-   ```shell
-   npm start
+3. **Configure Environment**
+   Create a `.env` file in the root directory:
+   ```env
+   PORT=3000
+   MONGODB_URI=mongodb://localhost:27017/otp-service
+   GMAIL_USER=your-email@gmail.com
+   GMAIL_PASS=your-app-password
    ```
 
-The service should now be running on the specified port (default is 3000).
+4. **Start the Server**
+   ```bash
+   npm run dev
+   ```
 
-## Usage
+## 📖 API Usage
 
-### Generating an OTP
-
-To generate an OTP for a user, make a POST request to the `/api/otp/generate` endpoint with the user's email address in the request body. You can also specify the OTP type, organization name, and email subject.
-
-Example request:
+### Generate OTP
+**POST** `/api/otp/generate`
 
 ```json
-POST /api/otp/generate
 {
   "email": "user@example.com",
   "type": "numeric",
-  "organization": "MyApp",
-  "subject": "OTP Verification"
+  "organization": "SecureFin"
 }
 ```
 
-The service will send an email containing the OTP to the user's email address.
-
-### Verifying an OTP
-
-To verify an OTP for user authentication, make a POST request to the `/api/otp/verify` endpoint with the user's email address and the OTP in the request body.
-
-Example request:
+### Verify OTP
+**POST** `/api/otp/verify`
 
 ```json
-POST /api/otp/verify
 {
   "email": "user@example.com",
   "otp": "123456"
 }
 ```
 
-The service will respond with a success message if the OTP is valid.
+## ⚙️ Configuration
 
-## Configuration
+| Variable | Description |
+|----------|-------------|
+| `PORT` | Server port (default: 3000) |
+| `MONGODB_URI` | MongoDB connection string |
+| `GMAIL_USER` | Gmail address for sending emails |
+| `GMAIL_PASS` | Gmail App Password |
+| `OTP_VALIDITY_PERIOD_MINUTES` | OTP expiry time (minutes) |
 
-You can customize the OTP service by modifying the environment variables in the `.env` file. Here are some key configuration options:
+## 📄 License
 
-### Environment Variables
-
-| Variable                     | Description                                                                                   |
-| ---------------------------- | --------------------------------------------------------------------------------------------- |
-| `PORT`                       | The port on which the service listens.                                                        |
-| `MONGODB_URI`                | The MongoDB connection string.                                                                |
-| `OTP_VALIDITY_PERIOD_MINUTES` | The validity period of OTPs in minutes.                                                      |
-| `OTP_SIZE`                   | The size (length) of OTPs.                                                                    |
-| `ALLOWED_DOMAINS`            | Comma-separated list of allowed email domains.                                                |
-| `GMAIL_USER`                 | Gmail username (used for sending emails).                                                     |
-| `GMAIL_PASS`                 | Gmail password (used for sending emails).                                                     |
-| `BLOCK_KEYWORDS_RULES`       | Comma-separated list of blocked keywords.                                                     |
-
-## Spam Detection
-
-The service uses a spam detection mechanism to prevent abuse. It checks the request body for spam keywords and blocks the request if any are found. You can configure the spam keywords by setting the `SPAM_WORDS` environment variable.
-
-## Donation
-
-If you find this project useful and want to support its development, consider buying us a coffee! Your support is greatly appreciated.
-
-<a href="https://www.buymeacoffee.com/sauravhathi" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/arial-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](https://github.com/sauravhathi/otp-service/blob/master/LICENSE) file for details.
+This project is licensed under the MIT License.
